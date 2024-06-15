@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+ 
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>贷款管理</title>
+    <!-- Bootstrap CSS -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}">
+    <!--<link rel="stylesheet" href="{% static 'assets/vendor/fonts/circular-std/style.css' %}">-->
+    <link rel="stylesheet" href="{% static 'assets/libs/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/fonts/fontawesome/css/fontawesome-all.css' %}">
+    <script src="{% static 'assets/vendor/jquery/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.js' %}"></script>
+    <script src="{% static 'assets/vendor/slimscroll/jquery.slimscroll.js' %}"></script>
+    <script src="{% static 'assets/vendor/parsley/parsley.js' %}"></script>
+    <script src="{% static 'assets/libs/js/main-js.js' %}"></script>
+</head>
+
+<body>
+    <!-- ============================================================== -->
+    <!-- main wrapper -->
+    <!-- ============================================================== -->
+    <div class="dashboard-main-wrapper">
+       <!-- ============================================================== -->
+        <!-- navbar -->
+        <!-- ============================================================== -->
+        <div class="dashboard-header">
+            <nav class="navbar navbar-expand-lg navbar-dark  bg-dark fixed-top">
+                <a class="navbar-brand" href="../">银行管理系统</a>
+            </nav>
+        </div>
+        
+        <div class="">
+            <div class="container-fluid  dashboard-content">
+                <!-- ============================================================== -->
+                <!-- pageheader -->
+                <!-- ============================================================== -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                        <div class="page-header">
+                            <h2>贷款管理-增删查<a href="../loan_issue" style="float:right;position: relative;bottom: 8px;" class="btn btn-primary btn-lg">贷款支付</a></h2>
+                            <hr>
+                            {% if messages %}
+                            {% for message in messages %}
+                            {% if message.tags %}
+                                {% if message.tags == 'error'%}
+                                <div id='alert' class="alert alert-danger" role="alert">
+                                    {{ message }}
+                                    <a style="float: right;cursor: pointer;" onclick="document.getElementById('alert').remove()" >×</a>
+                                </div>
+                                {% endif %}
+                                {% if message.tags == 'info'%}
+                                <div id='alert' class="alert alert-primary" role="alert">
+                                    {{ message }}
+                                    <a style="float: right;cursor: pointer;" onclick="document.getElementById('alert').remove()" >×</a>
+                                </div>
+                                {% endif %}
+                            {% endif %}
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-regular">
+                    <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link{% if not view_change %} active{% endif %}" id="add-tab" data-toggle="tab" href="#add" role="tab" aria-controls="add" aria-selected="{% if not view_change %}true{% else %}false{% endif %}"><b>添加贷款</b></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link{% if view_change %} active{% endif %}" id="change-tab" data-toggle="tab" href="#change" role="tab" aria-controls="change" aria-selected="{% if view_change %}true{% else %}false{% endif %}"><b>查询/删除贷款</b></a>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade{% if not view_change %} show active{% endif %}" id="add" role="tabpanel" aria-labelledby="add-tab">
+                            <p class ="lead">填写贷款信息:</p>
+                                <form id="addForm" data-parsley-validate="" novalidate="" method="post" action=".">
+                                    <div class="form-group row">
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">支行名称</label>
+                                        <div class="col-12 col-sm-8 col-lg-6">
+                                            <select name="fk_bank" class="form-control" style="color:#5969ff;">
+                                                <option style="color:#71748d;"></option>
+                                                {% for title in banks %}
+                                                    <option style="color:#71748d;">{{title}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">贷款号</label>
+                                        <div class="col-12 col-sm-8 col-lg-6">
+                                            <input name="Loan_ID" type="text" required="" data-parsley-maxlength="50" placeholder="贷款号" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">所贷金额</label>
+                                        <div class="col-12 col-sm-8 col-lg-6">
+                                            <input name="money" type="text" required="" data-parsley-type="number" placeholder="所贷金额" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">贷款客户身份证号</label>
+                                        <div class="col-12 col-sm-8 col-lg-6">
+                                            <input name="fk_client" type="text" required="" data-parsley-length="[1,18]" placeholder="身份证号" class="form-control">
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="function" value="add">
+                                    <div class="form-group row text-right">
+                                        <div class="col col-sm-10 col-lg-9 offset-sm-1 offset-lg-0">
+                                            <button type="submit" class="btn btn-space btn-primary">提交</button>
+                                        </div>
+                                    </div>
+                                </form>
+                        </div>
+                        <div class="tab-pane fade{% if view_change %} show active{% endif %}" id="change" role="tabpanel" aria-labelledby="change-tab">
+                            <h3>贷款查询、删除</h3>
+                            <form id="queryForm" data-parsley-validate="" novalidate="" method="post" action=".">
+                                <div class="form-group">
+                                    <label class="col-form-label">输入贷款号</label>
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-append">
+                                            <button type="submit" class="btn btn-primary">查询</button>
+                                        </div>
+                                        <input name="Loan_ID" type="text" data-parsley-maxlength="50" placeholder="贷款号" class="form-control">
+                                        <input type="hidden" name="function" value="query">
+                                    </div>
+                                </div>
+                            </form>
+                            {% if result %}
+                            <hr>
+                            <h3>查询结果如下，只能删除支付完成的贷款记录</h3>
+                                <table class="table table-bordered" id="resultTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Select</th>
+                                            <th>贷款状态</th>
+                                            <th>贷款号</th>
+                                            <th>贷款人身份证号</th>
+                                            <th>贷款金额</th>
+                                            <th>已支付金额</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for obj in result %}
+                                        <tr>
+                                            {% for key,value in obj.items %}
+                                                {% if key == 'status'%}
+                                                    {% if value == '已全部支付'%}
+                                                        <td>
+                                                            <label class="custom-control custom-checkbox custom-control-inline">
+                                                                <input type="checkbox" onclick="currIdx = this.parentElement.parentElement.parentElement.rowIndex;if(selectedIdxs.has(currIdx)){selectedIdxs.delete(currIdx);}else{selectedIdxs.add(currIdx);}" class="custom-control-input">
+                                                                <span class="custom-control-label"></span>
+                                                            </label>
+                                                        </td>
+                                                        <td >
+                                                            <span class="badge badge-success">{{value}}</span>
+                                                        </td>
+                                                    {% elif value == '支付中'%}
+                                                        <td>
+                                                            <label class="custom-control custom-checkbox custom-control-inline">
+                                                                <input type="checkbox" class="custom-control-input" disabled>
+                                                                <span class="custom-control-label"></span>
+                                                            </label>
+                                                        </td>
+                                                        <td >
+                                                            <span class="badge badge-warning">{{value}}</span>
+                                                        </td>
+                                                    {% elif value == '未支付'%}
+                                                        <td>
+                                                            <label class="custom-control custom-checkbox custom-control-inline">
+                                                                <input type="checkbox" class="custom-control-input" disabled>
+                                                                <span class="custom-control-label"></span>
+                                                            </label>
+                                                        </td>
+                                                        <td >
+                                                            <span class="badge badge-light">{{value}}</span>
+                                                        </td>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <td>{{value}}</td>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                <a class="btn btn-secondary btn-block" style="margin-top: 5px;color: #fff;" onclick="resultDelete();">删除</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- end main wrapper -->
+    {% if result %}
+    <script>
+    let selectedIdxs = new Set([]);
+    function HtmlEncode(s)
+    {
+        return s.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+    }
+    function resultDelete(){
+        if(selectedIdxs.size > 0){
+        let table = document.getElementById('resultTable');
+        var deleteIDs = [];
+        for (const idx of Array.from(selectedIdxs)) {
+            let row = table.rows[idx];
+            deleteIDs.push(row.cells[2].textContent);
+        }
+        var url = '.';
+        var form = $('<form action="' + url + '" method="post">' +
+        '<input type="text" name="deleteIDs" hidden="" value="' + HtmlEncode(JSON.stringify(deleteIDs)) + '" />' +
+        '<input type="hidden" name="function" value="delete">' +
+        '</form>');
+        $('body').append(form);
+        form.submit();}
+    };
+    </script>
+    {% endif %}
+</body>
+
+ 
+</html>

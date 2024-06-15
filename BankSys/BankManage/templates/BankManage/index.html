@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Welcome!</title>
+    <!-- Bootstrap CSS -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/fonts/circular-std/style.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/libs/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/fonts/fontawesome/css/fontawesome-all.css' %}">
+    <script src="{% static 'assets/vendor/jquery/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.js' %}"></script>
+    <script src="{% static 'assets/vendor/slimscroll/jquery.slimscroll.js' %}"></script>
+    <script src="{% static 'assets/libs/js/main-js.js' %}"></script>
+</head>
+
+<body>
+    <!-- ============================================================== -->
+    <!-- main wrapper -->
+    <!-- ============================================================== -->
+    <div class="dashboard-main-wrapper">
+        <!-- ============================================================== -->
+        <!-- navbar -->
+        <!-- ============================================================== -->
+        <div class="dashboard-header">
+            <nav class="navbar navbar-expand-lg bg-dark navbar-dark  fixed-top">
+                <a class="navbar-brand" href=".">银行管理系统</a>
+            </nav>
+        </div>
+        <!-- ============================================================== -->
+        <!-- end navbar -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- wrapper  -->
+        <!-- ============================================================== -->
+        <div class="dashboard-wrapper" style="margin-left: 0px;">
+            <div class="container-fluid dashboard-content">
+                <!-- ============================================================== -->
+                <!-- pageheader -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- end pageheader -->
+                <!-- ============================================================== -->
+                <div class="offset-xl-1 col-xl-10">
+                    <div class="row">
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                            <div class="card" style="width: 24rem;">
+                                <div class="card-body text-center">
+                                    <h1 class="mb-1">客户管理</h1>
+                                </div>
+                                <div class="card-body border-top">
+                                    <ul class="list-unstyled font-16">
+                                        <li>提供客户所有信息的增、删、改、查功能</li>
+                                    </ul>
+                                    <a href="client/" class="btn btn-dark btn-block btn-lg">进入</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                            <div class="card" style="width: 24rem;">
+                                <div class="card-body text-center">
+                                    <h1 class="mb-1">账户管理</h1>
+                                </div>
+                                <div class="card-body border-top">
+                                    <ul class="list-unstyled font-16">
+                                        <li>提供账户增删改查功能,支持储蓄账户的转账功能</li>
+                                    </ul>
+                                    <a href="account/" class="btn btn-dark btn-block btn-lg">进入</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                            <div class="card" style="width: 24rem;">
+                                <div class="card-body text-center">
+                                    <h1 class="mb-1">贷款管理</h1>
+                                </div>
+                                <div class="card-body border-top">
+                                    <ul class="list-unstyled font-16">
+                                        <li>提供贷款信息的增、删、查功能</li>
+                                    </ul>
+                                    <a href="loan_manage/" class="btn btn-dark btn-block btn-lg">进入</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                            <div class="card" style="width: 24rem;">
+                                <div class="card-body text-center">
+                                    <h1 class="mb-1">贷款支付</h1>
+                                </div>
+                                <div class="card-body border-top">
+                                    <ul class="list-unstyled font-16">
+                                        <li>提供贷款支付功能</li>
+                                    </ul>
+                                    <a href="loan_issue/" class="btn btn-dark btn-block btn-lg">进入</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                            <div class="card" style="width: 24rem;">
+                                <div class="card-body text-center">
+                                    <h1 class="mb-1">业务统计</h1>
+                                </div>
+                                <div class="card-body border-top">
+                                    <ul class="list-unstyled font-16">
+                                        <li>按业务分类和时间统计各支行的业务总金额和用户数</li>
+                                    </ul>
+                                    <a href="statistics/" class="btn btn-dark btn-block btn-lg">进入</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- end main wrapper -->
+    <!-- ============================================================== -->
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.tags %}
+    <script>alert("{{ message }}")</script> {% endif %}
+    {% endfor %}
+    {% endif %}
+</body>
+
+</html>

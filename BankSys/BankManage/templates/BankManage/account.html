@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+ 
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>账户管理</title>
+    <!-- Bootstrap CSS -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}">
+    <!--<link rel="stylesheet" href="{% static 'assets/vendor/fonts/circular-std/style.css' %}">-->
+    <link rel="stylesheet" href="{% static 'assets/libs/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/fonts/fontawesome/css/fontawesome-all.css' %}">
+    <script src="{% static 'assets/vendor/jquery/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.js' %}"></script>
+    <script src="{% static 'assets/vendor/slimscroll/jquery.slimscroll.js' %}"></script>
+    <script src="{% static 'assets/vendor/parsley/parsley.js' %}"></script>
+    <script src="{% static 'assets/libs/js/main-js.js' %}"></script>
+</head>
+
+<body>
+    <!-- ============================================================== -->
+    <!-- main wrapper -->
+    <!-- ============================================================== -->
+    <div class="dashboard-main-wrapper">
+       <!-- ============================================================== -->
+        <!-- navbar -->
+        <!-- ============================================================== -->
+        <div class="dashboard-header">
+            <nav class="navbar navbar-expand-lg bg-dark navbar-dark  fixed-top">
+                <a class="navbar-brand" href="../">银行管理系统</a>
+            </nav>
+        </div>
+
+        <div class="">
+            <div class="container-fluid  dashboard-content">
+                <!-- ============================================================== -->
+                <!-- pageheader -->
+                <!-- ============================================================== -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                        <div class="page-header">
+                            <h2>账户管理 - 增删改查</h2>
+                            <hr>
+                            {% if messages %}
+                            {% for message in messages %}
+                            {% if message.tags %}
+                                {% if message.tags == 'error'%}
+                                <div id='alert' class="alert alert-danger" role="alert">
+                                    {{ message }}
+                                    <a style="float: right;cursor: pointer;" onclick="document.getElementById('alert').remove()" >×</a>
+                                </div>
+                                {% endif %}
+                                {% if message.tags == 'info'%}
+                                <div id='alert' class="alert alert-primary" role="alert">
+                                    {{ message }}
+                                    <a style="float: right;cursor: pointer;" onclick="document.getElementById('alert').remove()" >×</a>
+                                </div>
+                                {% endif %}
+                            {% endif %}
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-regular">
+                    <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link{% if view == 'add' %} active{% endif %}" id="add-tab" data-toggle="tab" href="#add" role="tab" aria-controls="add" aria-selected="{% if view == 'add' %}true{% else %}false{% endif %}"><b>添加账户</b></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link{% if view == 'query' %} active{% endif %}" id="query-tab" data-toggle="tab" href="#query" role="tab" aria-controls="query" aria-selected="{% if view == 'query' %}true{% else %}false{% endif %}"><b>查询账户</b></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link{% if view == 'modify' %} active{% endif %}" id="modify-tab" data-toggle="tab" href="#modify" role="tab" aria-controls="modify" aria-selected="{% if view == 'modify' %}true{% else %}false{% endif %}"><b>修改/删除账户</b></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link{% if view == 'transfer' %} active{% endif %}" id="transfer-tab" data-toggle="tab" href="#transfer" role="tab" aria-controls="transfer" aria-selected="{% if view == 'transfer' %}true{% else %}false{% endif %}"><b>转账</b></a>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade{% if view == 'add' %} show active{% endif %}" id="add" role="tabpanel" aria-labelledby="add-tab">
+                            <p class ="lead">填写账户信息:</p>
+                                <form id="addForm" data-parsley-validate="" novalidate="" method="post" action=".">
+                                    <div class="form-group row">
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">支行名称</label>
+                                        <div class="col-12 col-sm-8 col-lg-6">
+                                            <select name="fk_bank" class="form-control" style="color:#5969ff;">
+                                                {% for title in banks %}
+                                                    <option style="color:#71748d;">{{title}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">所有人身份证号</label>
+                                        <div class="col-12 col-sm-8 col-lg-6">
+                                            <input name="fk_client" type="text" required="" data-parsley-length="[1,18]" placeholder="18位身份证号码" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">账户号</label>
+                                        <div class="col-12 col-sm-8 col-lg-6">
+                                            <input name="Account_ID" type="text" required="" data-parsley-maxlength="50" placeholder="账户号" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">余额</label>
+                                        <div class="col-12 col-sm-8 col-lg-6">
+                                            <input name="balance" type="text" required="" data-parsley-type="number" placeholder="账户余额数目" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">开户日期</label>
+                                        <div class="col-12 col-sm-8 col-lg-6">
+                                            <input name="open_date" type="date" required="" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">账户类型</label>
+                                        <div class="col-12 col-sm-8 col-lg-6">
+                                            <label class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" name="accountType" value="storeaccount" checked="" onclick="document.getElementById('inputRate').setAttribute('required','');document.getElementById('inputOverdraft').removeAttribute('required');document.getElementById('addFormRate').removeAttribute('hidden');document.getElementById('addFormCurrency').removeAttribute('hidden');document.getElementById('addFormOverdraft').setAttribute('hidden','');" class="custom-control-input"><span class="custom-control-label">储蓄账户</span>
+                                            </label>
+                                            <label class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" name="accountType" value="checkaccount" onclick="document.getElementById('inputOverdraft').setAttribute('required','');document.getElementById('inputRate').removeAttribute('required');document.getElementById('addFormOverdraft').removeAttribute('hidden');document.getElementById('addFormRate').setAttribute('hidden','');document.getElementById('addFormCurrency').setAttribute('hidden','');" class="custom-control-input"><span class="custom-control-label">支票账户</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row" id="addFormRate">
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">利率</label>
+                                        <div class="col-12 col-sm-8 col-lg-6">
+                                            <input name="rate" type="text" id="inputRate" required="" data-parsley-type="number" placeholder="储蓄的利率" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row" id="addFormCurrency">
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">货币类型</label>
+                                        <div class="col-12 col-sm-8 col-lg-6">
+                                            <select name="currency_type" class="form-control" style="color:#5969ff;">
+                                                <option style="color:#71748d;">CNY</option>
+                                                <option style="color:#71748d;">USD</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row" hidden="" id="addFormOverdraft">
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">透支额</label>
+                                        <div class="col-12 col-sm-8 col-lg-6">
+                                            <input name="overdraft" type="text" id="inputOverdraft" data-parsley-type="number" placeholder="支票的透支额" class="form-control">
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="function" value="add">
+                                    <div class="form-group row text-right">
+                                        <div class="col col-sm-10 col-lg-9 offset-sm-1 offset-lg-0">
+                                            <button type="submit" class="btn btn-space btn-primary">提交</button>
+                                        </div>
+                                    </div>
+                                </form>
+                        </div>
+                        <div class="tab-pane fade{% if view == 'query' %} show active{% endif %}" id="query" role="tabpanel" aria-labelledby="query-tab">
+                            <h3>账户查询</h3>
+                            <form id="queryForm" data-parsley-validate="" novalidate="" method="post" action=".">
+                                <div class="form-group row">
+                                    <label class="col-12 col-sm-3 col-form-label text-sm-right">支行名称</label>
+                                    <div class="col-12 col-sm-8 col-lg-6">
+                                        <select name="fk_bank" class="form-control" style="color:#5969ff;">
+                                            <option style="color:#71748d;"></option>
+                                            {% for title in banks %}
+                                                <option style="color:#71748d;">{{title}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-12 col-sm-3 col-form-label text-sm-right">账户号</label>
+                                    <div class="col-12 col-sm-8 col-lg-6">
+                                        <input name="Account_ID" type="text" data-parsley-maxlength="50" placeholder="账户号" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-12 col-sm-3 col-form-label text-sm-right">所有人身份证号</label>
+                                    <div class="col-12 col-sm-8 col-lg-6">
+                                        <input name="fk_client_id" type="text" placeholder="身份证号" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-12 col-sm-3 col-form-label text-sm-right">余额</label>
+                                    <div class="col-12 col-sm-8 col-lg-6">
+                                        <input name="balance" type="text" data-parsley-type="number" placeholder="账户余额数目" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-12 col-sm-3 col-form-label text-sm-right">开户日期</label>
+                                    <div class="col-12 col-sm-8 col-lg-6">
+                                        <input name="open_date" type="date" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-12 col-sm-3 col-form-label text-sm-right">账户类型</label>
+                                    <div class="col-12 col-sm-8 col-lg-6">
+                                        <label class="custom-control custom-radio custom-control-inline">
+                                            <input type="radio" name="accountType" value="storeaccount" checked="" onclick="document.getElementById('qryFormRate').removeAttribute('hidden');document.getElementById('qryFormCurrency').removeAttribute('hidden');document.getElementById('qryFormOverdraft').setAttribute('hidden','');" class="custom-control-input"><span class="custom-control-label">储蓄账户</span>
+                                        </label>
+                                        <label class="custom-control custom-radio custom-control-inline">
+                                            <input type="radio" name="accountType" value="checkaccount" onclick="document.getElementById('qryFormOverdraft').removeAttribute('hidden');document.getElementById('qryFormRate').setAttribute('hidden','');document.getElementById('qryFormCurrency').setAttribute('hidden','');" class="custom-control-input"><span class="custom-control-label">支票账户</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group row" id="qryFormRate">
+                                    <label class="col-12 col-sm-3 col-form-label text-sm-right">利率</label>
+                                    <div class="col-12 col-sm-8 col-lg-6">
+                                        <input name="rate" type="text" id="inputRate" data-parsley-type="number" placeholder="储蓄的利率" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row" id="qryFormCurrency">
+                                    <label class="col-12 col-sm-3 col-form-label text-sm-right">货币类型</label>
+                                    <div class="col-12 col-sm-8 col-lg-6">
+                                        <select name="currency_type" class="form-control" style="color:#5969ff;">
+                                            <option style="color:#71748d;"></option>
+                                            <option style="color:#71748d;">CNY</option>
+                                            <option style="color:#71748d;">USD</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row" hidden="" id="qryFormOverdraft">
+                                    <label class="col-12 col-sm-3 col-form-label text-sm-right">透支额</label>
+                                    <div class="col-12 col-sm-8 col-lg-6">
+                                        <input name="overdraft" type="text" id="inputOverdraft" data-parsley-type="number" placeholder="支票的透支额" class="form-control">
+                                    </div>
+                                </div>
+                                <input type="hidden" name="function" value="query">
+                                <div class="form-group row text-right">
+                                    <div class="col col-sm-10 col-lg-9 offset-sm-1 offset-lg-0">
+                                        <button type="submit" class="btn btn-space btn-primary">查询</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="tab-pane fade{% if view == 'modify' %} show active{% endif %}" id="modify" role="tabpanel" aria-labelledby="modify-tab">
+                            {% if result %}
+                            <hr>
+                            <h3>{% if account_type == 'storeaccount' %}储蓄账户的{% else %}支票账户的{% endif %}查询结果如下：</h3>
+                                <table class="table table-bordered" id="resultTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Select</th>
+                                            <th>Account_ID</th>
+                                            <th>fk_client_id</th>
+                                            <th>bank</th>
+                                            <th>balance</th>
+                                            <th>open_date</th>
+                                            {% if account_type == 'storeaccount' %}
+                                            <th>rate</th>
+                                            <th>currency_type</th>
+                                            {% else %}
+                                            <th>overdraft</th>
+                                            {% endif %}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for obj_dict in result %}
+                                        <tr>
+                                            <td>
+                                                <label class="custom-control custom-checkbox custom-control-inline">
+                                                    <input type="checkbox" onclick="currIdx = this.parentElement.parentElement.parentElement.rowIndex;if(selectedIdxs.has(currIdx)){selectedIdxs.delete(currIdx);}else{selectedIdxs.add(currIdx);}" class="custom-control-input">
+                                                    <span class="custom-control-label"></span>
+                                                </label>
+                                            </td>
+                                            {% for key,value in obj_dict.items %}
+                                                {% if key == 'Account_ID' %}
+                                                    <td contenteditable="false">{{value}}</td>
+                                                {% elif key == 'fk_bank' %}
+                                                    <td contenteditable="false">{{value}}</td>
+                                                {% else %}
+                                                    <td contenteditable="true">{{value}}</td>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </tr>
+                                        {% endfor%}
+                                    </tbody>
+                                </table>
+                                <a class="btn btn-dark btn-block" style="margin-top: 10px;color: #fff;" onclick="resultModify();">修改</a>
+                                <a class="btn btn-dark btn-block" style="margin-top: 10px;color: #fff;" onclick="resultDelete();">删除</a>
+                                {% else %}
+                                {% endif %}
+                        </div>
+                        <div class="tab-pane fade{% if view == 'transfer' %} show active{% endif %}" id="transfer" role="tabpanel" aria-labelledby="transfer-tab">
+                            <h3>转账</h3>
+                            <p  class ="lead">输入两个储蓄账户号和金额，进行转账：</p>
+                            <form id="transferForm" data-parsley-validate="" novalidate="" method="post" action=".">
+                                <div class="form-group row">
+                                    <label class="col-12 col-sm-3 col-form-label text-sm-right">转出账户号</label>
+                                    <div class="col-12 col-sm-8 col-lg-6">
+                                        <input name="Account_ID_from" type="text" data-parsley-maxlength="50" placeholder="账户号" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-12 col-sm-3 col-form-label text-sm-right">转入账户号</label>
+                                    <div class="col-12 col-sm-8 col-lg-6">
+                                        <input name="Account_ID_to" type="text" data-parsley-maxlength="50" placeholder="账户号" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-12 col-sm-3 col-form-label text-sm-right">转账金额</label>
+                                    <div class="col-12 col-sm-8 col-lg-6">
+                                        <input name="money" type="text" data-parsley-type="number" placeholder="转账金额" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row text-right">
+                                    <input type="hidden" name="function" value="transfer">
+                                    <div class="col col-sm-10 col-lg-9 offset-sm-1 offset-lg-0">
+                                        <button type="submit" class="btn btn-space btn-primary">转账</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- end main wrapper -->
+    {% if result %}
+    <script>
+        let selectedIdxs = new Set([]);
+        function HtmlEncode(s)
+        {
+            return s.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+        }
+        function resultModify(){
+            if(selectedIdxs.size > 0){
+            let table = document.getElementById('resultTable');
+            var outArray = [];
+            for (const idx of Array.from(selectedIdxs)) {
+                let row = table.rows[idx];
+                {% if account_type == 'storeaccount' %}
+                var account = {"Account_ID":row.cells[1].textContent,
+                            "fk_client_id":row.cells[2].textContent,
+                            "fk_bank":row.cells[3].textContent,
+                            "balance":row.cells[4].textContent,
+                            "open_date":row.cells[5].textContent,
+                            "rate":row.cells[6].textContent,
+                            "currency_type":row.cells[7].textContent};
+                {% endif %}
+                {% if account_type == 'checkaccount' %}
+                var account = {"Account_ID":row.cells[1].textContent,
+                            "fk_client_id":row.cells[2].textContent,
+                            "fk_bank":row.cells[3].textContent,
+                            "balance":row.cells[4].textContent,
+                            "open_date":row.cells[5].textContent,
+                            "overdraft":row.cells[6].textContent};
+                {% endif %}
+                outArray.push(JSON.stringify(account));
+            }
+            var url = '.';
+            var form = $('<form action="' + url + '" method="post">' +
+            '<input type="text" name="modifiedData" hidden="" value="[' + HtmlEncode(outArray.join(',')) + ']" />' +
+            '<input type="hidden" name="function" value="modify">' +
+            '<input type="hidden" name="accountType" value="{{account_type}}">' +
+            '</form>');
+            $('body').append(form);
+            form.submit();}
+        };
+        function resultDelete(){
+            if(selectedIdxs.size > 0){
+            let table = document.getElementById('resultTable');
+            var outArray = [];
+            for (const idx of Array.from(selectedIdxs)) {
+                let row = table.rows[idx];
+                var account = {"Account_ID":row.cells[1].textContent,
+                            "fk_bank":row.cells[2].textContent};
+                outArray.push(JSON.stringify(account));
+            }
+            var url = '.';
+            var form = $('<form action="' + url + '" method="post">' +
+            '<input type="text" name="deleteData" hidden="" value="[' + HtmlEncode(outArray.join(',')) + ']" />' +
+            '<input type="hidden" name="function" value="delete">' +
+            '<input type="hidden" name="accountType" value="{{account_type}}">' +
+            '</form>');
+            $('body').append(form);
+            form.submit();}
+        };
+    </script>
+   {% endif %}
+</body>
+
+ 
+</html>
